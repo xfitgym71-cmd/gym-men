@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Xfit Gym · الكوتش</title>
+<style>
+:root{--pink:#e11d2e;--pink-l:#fde8ea;--line:#f1d3df;--mute:#777;--bg:#fff8f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;color:#222}
+.wrap{max-width:560px;margin:0 auto;padding:16px}
+h1{color:var(--pink);font-size:22px;margin:8px 0 16px}
+h2{font-size:17px;margin:0 0 6px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
+label{display:block;font-weight:700;font-size:14px;margin:12px 0 6px}
+input{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:12px;font:inherit;background:#fff;min-width:0}
+button{font:inherit;font-weight:700;border:none;border-radius:12px;padding:10px 14px;cursor:pointer;background:var(--pink);color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.ghost{background:transparent;color:var(--pink);border:1px solid var(--pink)}
+.full{width:100%;margin-top:12px}
+.msg{margin:10px 0 0;font-size:14px}
+.msg.err{color:#d33}
+.mute{color:var(--mute);font-size:13px}
+.nav{display:flex;gap:6px;margin-top:10px}
+.nav button{flex:1;padding:9px 6px;font-size:14px}
+.tag{background:var(--pink-l);color:var(--pink);border-radius:20px;padding:2px 10px;font-weight:700;font-size:12px;display:inline-block;margin-inline-end:6px}
+.tag.bad{color:#d33;border:1px solid #d33;background:transparent}
+ol{margin:10px 0 0;padding-inline-start:22px;line-height:2}
+.link{background:none;color:var(--pink);padding:6px 0;font-weight:600;font-size:13px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Xfit Gym · الكوتش</h1>
+
+  <section id="login" class="card">
+    <label for="em">الإيميل</label>
+    <input type="email" id="em" dir="ltr" autocomplete="username">
+    <label for="pw">كلمة السر</label>
+    <input type="password" id="pw" dir="ltr" autocomplete="current-password">
+    <p id="loginMsg" class="msg"></p>
+    <button id="loginBtn" class="full" type="button">دخول</button>
+    <button id="forgot" class="link" type="button">نسيت كلمة السر</button>
+  </section>
+
+  <section id="panel" hidden>
+    <div class="card">
+      <h2 id="who"></h2>
+      <label for="date">التاريخ</label>
+      <input type="date" id="date">
+      <div class="nav">
+        <button class="ghost" id="prev" type="button">اليوم السابق</button>
+        <button class="ghost" id="today" type="button">اليوم</button>
+        <button class="ghost" id="next" type="button">اليوم التالي</button>
+      </div>
+      <p id="msg" class="msg"></p>
+    </div>
+    <div id="list"></div>
+    <button id="logout" class="ghost full" type="button">تسجيل خروج</button>
+  </section>
+</div>
+
+<script type="module">
+import { auth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "./xfit-firebase.js";
+const API_URL = "https://script.google.com/macros/s/AKfycbwZYnILlK_RNTeCv6l54kOqcgG1ZNxtR7DieFuPPQV0mXOdBl4jnlytY9ZwmTP8fvl1/exec";
+const $ = s => document.querySelector(s);
+const say = (n, t, k) => { n.textContent = t || ""; n.className = "msg " + (k || ""); };
+const pad = n => String(n).padStart(2, "0");
+const fmt = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+const FB_ERR = {
+  "auth/invalid-credential": "الإيميل أو كلمة السر غلط",
+  "auth/wrong-password": "الإيميل أو كلمة السر غلط",
+  "auth/user-not-found": "الإيميل أو كلمة السر غلط",
+  "auth/invalid-email": "الإيميل غير صحيح",
+  "auth/too-many-requests": "محاولات كثيرة، جرّب بعد شوي",
+  "auth/network-request-failed": "ما في اتصال، جرّب مرة ثانية"
+};
+
+$("#date").value = fmt(new Date());
+
+$("#loginBtn").onclick = async () => {
+  const email = $("#em").value.trim(), pass = $("#pw").value, m = $("#loginMsg");
+  if (!email || !pass) return say(m, "اكتب الإيميل وكلمة السر", "err");
+  $("#loginBtn").disabled = true; say(m, "...");
+  try { await signInWithEmailAndPassword(auth, email, pass); say(m, ""); }
+  catch (e) { say(m, FB_ERR[e.code] || "صار خطأ، جرّب مرة ثانية", "err"); }
+  $("#loginBtn").disabled = false;
+};
+$("#forgot").onclick = async () => {
+  const email = $("#em").value.trim(), m = $("#loginMsg");
+  if (!email) return say(m, "اكتب الإيميل أول", "err");
+  try { await sendPasswordResetEmail(auth, email); say(m, "بعتنا لك رابط تغيير كلمة السر على الإيميل"); }
+  catch (e) { say(m, FB_ERR[e.code] || "صار خطأ، جرّب مرة ثانية", "err"); }
+};
+$("#logout").onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, u => {
+  $("#login").hidden = !!u; $("#panel").hidden = !u;
+  if (u) load(); else $("#list").replaceChildren();
+});
+
+async function load() {
+  const m = $("#msg"), box = $("#list");
+  say(m, "..."); box.replaceChildren();
+  try {
+    const idToken = await auth.currentUser.getIdToken();
+    const res = await fetch(API_URL, {
+      method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "coachBookings", idToken, date: $("#date").value })
+    });
+    const r = await res.json();
+    if (!r.ok) {
+      say(m, r.error === "denied" ? "هالحساب مش مسجّل ككوتش. تواصل مع الأدمن." : r.error === "bad date" ? "التاريخ لازم يكون من اليوم لـ 7 أيام قدام" : "ما قدرت أحمّل الحصص، جرّب مرة ثانية", "err");
+      return;
+    }
+    say(m, "");
+    $("#who").textContent = "أهلاً " + r.coach + " 👋";
+    if (!r.classes.length) { const p = document.createElement("p"); p.className = "mute"; p.textContent = "ما عندك حصص بهاليوم (" + r.day + ")"; box.appendChild(p); return; }
+    r.classes.forEach(c => {
+      const card = document.createElement("div"); card.className = "card";
+      const h = document.createElement("h2"); h.textContent = c.cls + " · " + c.time; card.appendChild(h);
+      const t1 = document.createElement("span"); t1.className = "tag"; t1.textContent = c.names.length + "/" + c.max + " متدربة";
+      card.appendChild(t1);
+      if (c.cancelled) { const t2 = document.createElement("span"); t2.className = "tag bad"; t2.textContent = "ملغاة"; card.appendChild(t2); }
+      if (!c.names.length) { const p = document.createElement("p"); p.className = "mute"; p.textContent = "ما في حجوزات لسا"; card.appendChild(p); }
+      else { const ol = document.createElement("ol"); c.names.forEach(n => { const li = document.createElement("li"); li.textContent = n; ol.appendChild(li); }); card.appendChild(ol); }
+      box.appendChild(card);
+    });
+  } catch (e) { say(m, "ما في اتصال، جرّب مرة ثانية", "err"); }
+}
+$("#date").onchange = load;
+const shift = n => { const d = new Date($("#date").value + "T12:00:00"); d.setDate(d.getDate() + n); $("#date").value = fmt(d); load(); };
+$("#prev").onclick = () => shift(-1);
+$("#next").onclick = () => shift(1);
+$("#today").onclick = () => { $("#date").value = fmt(new Date()); load(); };
+</script>
+</body>
+</html>

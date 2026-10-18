@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Xfit Gym · الأدمن</title>
+<style>
+.embed h1,.embed #logout{display:none}
+.embed body{background:transparent}
+:root{--pink:#e11d2e;--pink-l:#fde8ea;--line:#f1d3df;--mute:#777;--bg:#fff8f8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;color:#222}
+.wrap{max-width:560px;margin:0 auto;padding:16px}
+h1{color:var(--pink);font-size:22px;margin:8px 0 16px}
+h2{font-size:17px;margin:0 0 10px}
+h3{font-size:15px;margin:14px 0 6px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
+label{display:block;font-weight:700;font-size:14px;margin:12px 0 6px}
+input,select{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:12px;font:inherit;background:#fff;min-width:0}
+button{font:inherit;font-weight:700;border:none;border-radius:12px;padding:10px 14px;cursor:pointer;background:var(--pink);color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.ghost{background:transparent;color:var(--pink);border:1px solid var(--pink)}
+button.danger{background:#d33}
+button.sm{padding:8px 10px;font-size:13px}
+.full{width:100%;margin-top:12px}
+.tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.tabs button{flex:1;min-width:70px;background:#fff;color:var(--pink);border:1px solid var(--pink);padding:9px 6px;font-size:14px}
+.tabs button.on{background:var(--pink);color:#fff}
+.preview{margin-top:10px;background:var(--pink-l);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.8}
+.msg{margin:10px 0 0;font-size:14px}
+.msg.err{color:#d33}.msg.ok{color:#1a9d4a}
+.hint{color:var(--mute);font-size:13px;line-height:1.7;margin:6px 0}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.item:first-child{border-top:none}
+.item .t{font-weight:700}
+.item .s{color:var(--mute);font-size:13px}
+.res{margin-top:12px;font-size:14px;line-height:1.8}
+.res .c{background:var(--pink-l);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.res a{color:var(--pink);font-weight:700;text-decoration:none}
+.empty{color:var(--mute);font-size:14px}
+.row{border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px;background:#fffdfe}
+.row .l2{display:grid;grid-template-columns:1fr 70px 1.2fr auto;gap:6px;margin-top:6px}
+.row .l1{display:flex;gap:6px}
+.crow{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.crow span{font-size:12px;color:var(--mute);white-space:nowrap}
+.xrow{display:grid;grid-template-columns:1fr 90px auto;gap:6px;margin-bottom:6px}
+.chrow{margin-bottom:10px}
+.chrow b{font-size:13px}
+.chrow input{margin-top:4px}
+.plan{border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:12px}
+
+/* ---- المشتركات ---- */
+textarea{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:12px;font:inherit;background:#fff;min-height:100px;resize:vertical;line-height:1.7}
+.mute{color:var(--mute);font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.chip{background:transparent;color:var(--pink);border:1px solid var(--pink);padding:6px 12px;font-size:13px;border-radius:20px}
+.chip[aria-pressed="true"]{background:var(--pink);color:#fff}
+.mrow{display:block;width:100%;text-align:start;background:#fff;color:#222;border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;font-weight:400}
+.mrow:hover{border-color:var(--pink)}
+.mrow b{display:block;font-size:16px}
+.mrow .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;align-items:center;font-size:13px;color:var(--mute)}
+.tag{background:var(--pink-l);color:var(--pink);border-radius:20px;padding:2px 10px;font-weight:700;font-size:12px}
+.tag.x{background:transparent;border:1px solid var(--line);color:var(--mute)}
+.tag.bad{color:#d33;border:1px solid #d33;background:transparent}
+.count{font-size:13px;color:var(--mute);margin:8px 2px}
+dialog{border:1px solid var(--line);border-radius:18px;background:var(--bg);color:#222;width:min(520px,94vw);max-height:92vh;padding:16px}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.acts{display:flex;gap:8px;margin-top:14px}.acts button{flex:1}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<script>if (/[?&]embed/.test(location.search)) document.documentElement.classList.add("embed");</script>
+<div class="wrap">
+  <h1>لوحة الأدمن · Xfit Gym</h1>
+
+  <section id="login" class="card">
+    <label for="em">الإيميل</label>
+    <input type="email" id="em" dir="ltr" autocomplete="username">
+    <label for="pw">كلمة السر</label>
+    <input type="password" id="pw" dir="ltr" autocomplete="current-password">
+    <p id="loginMsg" class="msg"></p>
+    <button id="loginBtn" class="full">دخول</button>
+  </section>
+
+  <section id="panel" hidden>
+    <div class="tabs" id="nav">
+      <button data-p="pBook" class="on" type="button">الحجوزات</button>
+      <button data-p="pCancel" type="button">إلغاء حصص</button>
+      <button data-p="pSched" type="button">الجدول</button>
+      <button data-p="pCoach" type="button">الكوتشات</button>
+      <button data-p="pEx" type="button">التمارين</button>
+      <button data-p="pMem" type="button">المشتركات</button>
+    </div>
+
+    <!-- ===== إلغاء ===== -->
+    <!-- ===== الحجوزات ===== -->
+    <div id="pBook">
+      <div class="card">
+        <h2>مين حاجز بكل حصة</h2>
+        <label for="bkDate">التاريخ</label>
+        <input type="date" id="bkDate">
+        <label for="bkCoach">الكوتش</label>
+        <select id="bkCoach"><option value="">كل الكوتشات</option></select>
+        <button id="bkCopyAll" class="ghost full" type="button" style="margin-top:10px">نسخ القائمة (للكوتش)</button>
+        <p id="bkMsg" class="msg"></p>
+        <p id="bkSum" class="count"></p>
+      </div>
+      <div id="bkList"></div>
+    </div>
+
+    <div id="pCancel" hidden>
+      <div class="card">
+        <h2>إلغاء حصص</h2>
+        <label for="date">التاريخ</label>
+        <input type="date" id="date">
+        <label>شو بدك تلغي؟</label>
+        <div class="tabs">
+          <button id="mCoach" class="on" type="button">كل حصص كوتش</button>
+          <button id="mClass" type="button">حصة وحدة</button>
+        </div>
+        <select id="coachSel"></select>
+        <select id="classSel" hidden></select>
+        <div id="preview" class="preview"></div>
+        <label for="note">ملاحظة تظهر للمشتركات (اختياري)</label>
+        <input id="note" maxlength="120" placeholder="مثلاً: الكوتش غايبة">
+        <button id="cancelBtn" class="danger full" type="button">إلغاء الحصص</button>
+        <p id="msg" class="msg"></p>
+        <div id="result" class="res"></div>
+      </div>
+      <div class="card">
+        <h2>الإلغاءات القادمة</h2>
+        <div id="list"></div>
+      </div>
+    </div>
+
+    <!-- ===== الجدول ===== -->
+    <div id="pSched" hidden>
+      <div class="card">
+        <h2>جدول الحصص</h2>
+        <div class="tabs" id="dayTabs"></div>
+        <div id="classRows"></div>
+        <button id="addClass" class="ghost full" type="button">+ إضافة حصة</button>
+        <p class="hint">تنبيه: إذا غيّرت اسم أو وقت حصة عليها حجوزات قادمة، الحجوزات القديمة ما رح تنربط بالحصة الجديدة. الأفضل تلغي الحصة أول وتتواصل مع المحجوزات.</p>
+        <datalist id="clsNames"></datalist>
+        <button class="saveBtn full" type="button">حفظ التغييرات</button>
+        <p class="msg saveMsg"></p>
+      </div>
+      <div class="card">
+        <h2>عدد الأماكن</h2>
+        <label for="spotDef">العدد الافتراضي لكل حصة</label>
+        <input type="number" id="spotDef" min="1" max="100">
+        <h3>حصص بعدد مختلف</h3>
+        <p class="hint">اتركي الخانة فاضية لتاخد العدد الافتراضي. تقليل العدد ما بيلغي حجوزات موجودة، بس بيمنع حجوزات جديدة لحد ما يتوفر مكان.</p>
+        <div id="spotRows"></div>
+        <button class="saveBtn full" type="button">حفظ التغييرات</button>
+        <p class="msg saveMsg"></p>
+      </div>
+    </div>
+
+    <!-- ===== الكوتشات ===== -->
+    <div id="pCoach" hidden>
+      <div class="card">
+        <h2>الكوتشات</h2>
+        <p class="hint">تغيير الاسم بينطبق على كل حصصها. التقييمات القديمة بتضل مسجلة بالاسم القديم.</p>
+        <div id="coachRows"></div>
+        <h3>إضافة كوتش</h3>
+        <div class="crow"><input id="newCoach" maxlength="30" placeholder="الاسم"><button id="addCoach" class="sm" type="button">إضافة</button></div>
+        <button class="saveBtn full" type="button">حفظ التغييرات</button>
+        <p class="msg saveMsg"></p>
+      </div>
+    </div>
+
+    <!-- ===== التمارين ===== -->
+    <!-- ===== المشتركات ===== -->
+    <div id="pMem" hidden>
+    <div class="card">
+      <label for="mq" style="margin-top:0">بحث بالاسم أو الرقم أو الإيميل</label>
+      <input id="mq" type="search" autocomplete="off">
+      <div class="chips" id="mchips">
+        <button class="chip" type="button" data-f="all" aria-pressed="true">الكل</button>
+        <button class="chip" type="button" data-f="private" aria-pressed="false">برايفت</button>
+        <button class="chip" type="button" data-f="sched" aria-pressed="false">عندها جدول</button>
+        <button class="chip" type="button" data-f="nut" aria-pressed="false">عندها تغذية</button>
+        <button class="chip" type="button" data-f="expired" aria-pressed="false">منتهي</button>
+        <button class="chip" type="button" data-f="none" aria-pressed="false">بدون اشتراك</button>
+      </div>
+      <p id="mcount" class="count"></p>
+    </div>
+    <div id="mlist"></div>
+    </div>
+
+    <div id="pEx" hidden>
+      <div class="card">
+        <h2>التحدي اليومي</h2>
+        <p class="hint">بيظهر بالصفحة الرئيسية حسب اليوم.</p>
+        <div id="chRows"></div>
+        <button class="saveBtn full" type="button">حفظ التغييرات</button>
+        <p class="msg saveMsg"></p>
+      </div>
+      <div class="card">
+        <h2>برنامج التمارين</h2>
+        <div id="planRows"></div>
+        <button id="addPlan" class="ghost full" type="button">+ إضافة يوم تمارين</button>
+        <button class="saveBtn full" type="button">حفظ التغييرات</button>
+        <p class="msg saveMsg"></p>
+      </div>
+    </div>
+
+    <button id="logout" class="ghost full" type="button">تسجيل خروج</button>
+  </section>
+</div>
+
+<dialog id="dlg">
+  <h2 id="dName"></h2>
+  <p id="dInfo" class="mute" dir="auto"></p>
+  <label for="fType">نوع الاشتراك</label>
+  <select id="fType"><option value="group">جروب</option><option value="private">برايفت 💎</option></select>
+  <label for="fEnd">تاريخ الانتهاء</label>
+  <input id="fEnd" type="date" dir="ltr">
+  <label for="fSched">الجدول الخاص (برايفت)</label>
+  <textarea id="fSched"></textarea>
+  <label for="fNut">خطة التغذية (برايفت)</label>
+  <textarea id="fNut"></textarea>
+  <label for="fNote">ملاحظات من الكوتش</label>
+  <textarea id="fNote"></textarea>
+  <p id="dmsg" class="msg"></p>
+  <div class="acts"><button id="dSave" type="button">حفظ</button><button id="dClose" class="ghost" type="button">إغلاق</button></div>
+</dialog>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwZYnILlK_RNTeCv6l54kOqcgG1ZNxtR7DieFuPPQV0mXOdBl4jnlytY9ZwmTP8fvl1/exec";
+const DAYS = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+const ORDER = ["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة"];
+const DEFAULT_PLAN = [
+  {en:"Day 1 – Upper Body", ar:"اليوم 1 – Upper Body", items:[["DB Chest Press",null],["Cable Lat Pulldown",1],["Triceps Pushdown",2],["Biceps Curl",3],["DB Shoulder Press",null],["Abs Crunch",5],["Lower Back",4]]},
+  {en:"Day 2 – Lower Body", ar:"اليوم 2 – Lower Body", items:[["Leg Extension",6],["Seated Leg Curl",7],["Kickback",8],["Hip Abduction",9],["Hip Adduction",9],["Seated Calf Raises",10]]}
+];
+const DEFAULT_CH = {
+  en:["20 squats 🍑","30-second plank 🔥","10 push-ups 💪","Drink 2 liters of water 💧","15 glute bridges ✨","20 jumping jacks ⚡","Stretch for 5 minutes 🧘‍♂️"],
+  ar:["20 سكوات 🦵","بلانك 30 ثانية 🔥","10 ضغطات 💪","اشرب 2 لتر ماي 💧","15 جلوت بريدج ✨","20 جامبينج جاك ⚡","تمدّد 5 دقايق 🧘‍♂️"]
+};
+const $ = s => document.querySelector(s);
+const clone = o => JSON.parse(JSON.stringify(o));
+let pw = "", fbOk = false, info = null, mode = "coach", cfg = null, sd = ORDER[0];
+
+const ERR = {
+  denied: "هالحساب مش حساب الأدمن",
+  busy: "محاولات كثيرة، جرّب بعد 10 دقايق",
+  setup: "لازم تحطي كلمة سر داخل السكربت (ADMIN_PASSWORD) وتنشري نسخة جديدة",
+  "bad date": "التاريخ غير صحيح (لازم يكون اليوم أو بعده)",
+  none: "ما في حصص مطابقة",
+  "bad request": "الطلب غير صحيح",
+  "bad config": "في بيانات غير صحيحة بالجدول",
+  "too big": "البيانات كبيرة كثير، قلّلي شوي"
+};
+const errText = e => ERR[e] || "صار خطأ، جرّب مرة ثانية";
+
+async function api(params) {
+  const idToken = window.xfitToken ? await window.xfitToken() : "";
+  const r = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(Object.assign({ idToken }, params))
+  });
+  return r.json();
+}
+function el(tag, text, cls) {
+  const e = document.createElement(tag);
+  if (text != null) e.textContent = text;
+  if (cls) e.className = cls;
+  return e;
+}
+function inp(value, ph, max, type) {
+  const i = el("input"); i.value = value == null ? "" : value;
+  if (ph) i.placeholder = ph; if (max) i.maxLength = max; if (type) i.type = type;
+  return i;
+}
+function dayOf(date) {
+  const d = new Date(date + "T12:00:00");
+  return isNaN(d) ? null : DAYS[d.getDay()];
+}
+function setMsg(node, text, kind) { node.textContent = text || ""; node.className = node.className.replace(/\s*\b(err|ok)\b/g, "") + (kind ? " " + kind : ""); }
+
+/* ---------- login ---------- */
+async function login(silent) {
+  const m = $("#loginMsg");
+  if (!silent) setMsg(m, "...");
+  $("#loginBtn").disabled = true;
+  try {
+    const r = await api({ action: "adminInfo" });
+    if (!r.ok) { if (!silent) setMsg(m, errText(r.error), "err"); return; }
+    info = r;
+    $("#login").hidden = true; $("#panel").hidden = false;
+    loadCfg(); fillForm(); renderList(); renderAll(); if (window.xfitLoadBk) window.xfitLoadBk();
+  } catch (e) {
+    if (!silent) setMsg(m, "ما في اتصال، جرّب مرة ثانية", "err");
+  } finally { $("#loginBtn").disabled = false; }
+}
+/* One login for everything: Firebase (email + password) opens the members page,
+   and the same password is checked by the Apps Script for the admin actions. */
+const FB_ERR = {
+  "auth/invalid-credential": "الإيميل أو كلمة السر غلط",
+  "auth/wrong-password": "الإيميل أو كلمة السر غلط",
+  "auth/user-not-found": "الإيميل أو كلمة السر غلط",
+  "auth/invalid-email": "الإيميل غير صحيح",
+  "auth/too-many-requests": "محاولات كثيرة، جرّب بعد شوي",
+  "auth/network-request-failed": "ما في اتصال، جرّب مرة ثانية"
+};
+$("#loginBtn").onclick = async () => {
+  const email = $("#em").value.trim(), pass = $("#pw").value, m = $("#loginMsg");
+  if (!email || !pass) return setMsg(m, "اكتب الإيميل وكلمة السر", "err");
+  if (!window.xfitSignIn) return setMsg(m, "لحظة، الصفحة لسا عم تحمّل...", "err");
+  $("#loginBtn").disabled = true; setMsg(m, "...");
+  const code = await window.xfitSignIn(email, pass);
+  if (code) { $("#loginBtn").disabled = false; return setMsg(m, FB_ERR[code] || "صار خطأ، جرّب مرة ثانية", "err"); }
+  fbOk = true; login(false);
+};
+["#pw", "#em"].forEach(id => $(id).addEventListener("keydown", e => { if (e.key === "Enter") $("#loginBtn").click(); }));
+$("#logout").onclick = async () => {
+  try { sessionStorage.removeItem("xfitm_pw"); } catch (e) {}
+  try { if (window.xfitSignOut) await window.xfitSignOut(); } catch (e) {}
+  location.reload();
+};
+/* called by the Firebase module when a saved sign-in is found */
+window.xfitResume = () => { fbOk = true; login(true); };
+
+/* ---------- navigation ---------- */
+$("#nav").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll("#nav button").forEach(x => x.classList.toggle("on", x === b));
+  ["pBook","pCancel","pSched","pCoach","pEx","pMem"].forEach(id => $("#" + id).hidden = id !== b.dataset.p);
+});
+
+/* ---------- config (draft) ---------- */
+function loadCfg() {
+  const c = info.config || {};
+  const sch = {};
+  ORDER.forEach(d => { sch[d] = clone((c.schedule || info.schedule || {})[d] || []); });
+  const set = [];
+  (c.coaches || info.coaches || []).forEach(n => { if (set.indexOf(n) < 0) set.push(n); });
+  ORDER.forEach(d => sch[d].forEach(x => { if (set.indexOf(x[3]) < 0) set.push(x[3]); }));
+  cfg = {
+    schedule: sch,
+    coaches: set,
+    plan: clone(c.plan && c.plan.length ? c.plan : DEFAULT_PLAN),
+    spots: clone(c.spots || { def: 15, by: { "Spinning": 13 } }),
+    ch: clone(c.ch && c.ch.ar && c.ch.en && c.ch.ar.length === 7 && c.ch.en.length === 7 ? c.ch : DEFAULT_CH)
+  };
+}
+function renderAll() { renderDayTabs(); renderClassRows(); renderSpots(); renderCoaches(); renderCh(); renderPlan(); }
+
+/* ---------- schedule editor ---------- */
+function renderDayTabs() {
+  $("#dayTabs").replaceChildren(...ORDER.map(d => {
+    const b = el("button", d); b.type = "button";
+    if (d === sd) b.className = "on";
+    b.onclick = () => { sd = d; renderDayTabs(); renderClassRows(); };
+    return b;
+  }));
+}
+function coachSelect(value) {
+  const s = el("select");
+  const list = cfg.coaches.slice(); if (value && list.indexOf(value) < 0) list.push(value);
+  list.forEach(n => { const o = el("option", n); o.value = n; s.appendChild(o); });
+  if (!value) { const o = el("option", "— اختار كوتش —"); o.value = ""; s.insertBefore(o, s.firstChild); }
+  s.value = value || "";
+  return s;
+}
+function renderClassRows() {
+  const names = [];
+  ORDER.forEach(d => cfg.schedule[d].forEach(c => { if (names.indexOf(c[0]) < 0) names.push(c[0]); }));
+  $("#clsNames").replaceChildren(...names.map(n => { const o = el("option"); o.value = n; return o; }));
+  const list = cfg.schedule[sd], box = $("#classRows");
+  if (!list.length) { box.replaceChildren(el("div", "ما في حصص بهاليوم (يوم راحة)", "empty")); return; }
+  box.replaceChildren(...list.map((c, i) => {
+    const row = el("div", null, "row"), l1 = el("div", null, "l1"), l2 = el("div", null, "l2");
+    const name = inp(c[0], "اسم الحصة", 40); name.setAttribute("list", "clsNames");
+    name.oninput = () => { c[0] = name.value; }; name.onchange = renderSpots;
+    const time = inp(c[1], "", 0, "time"); time.oninput = () => { c[1] = time.value; };
+    const mins = inp(c[2], "دقيقة", 0, "number"); mins.min = 15; mins.max = 240; mins.oninput = () => { c[2] = parseInt(mins.value, 10) || 60; };
+    const coach = coachSelect(c[3]); coach.onchange = () => { c[3] = coach.value; };
+    const del = el("button", "حذف", "danger sm"); del.type = "button";
+    del.onclick = () => { if (confirm("حذف حصة " + (c[0] || "") + " من يوم " + sd + "؟")) { list.splice(i, 1); renderClassRows(); renderSpots(); } };
+    l1.appendChild(name);
+    l2.append(time, mins, coach, del);
+    row.append(l1, l2);
+    return row;
+  }));
+}
+$("#addClass").onclick = () => {
+  cfg.schedule[sd].push(["", "09:00", 60, cfg.coaches[0] || ""]);
+  renderClassRows();
+};
+
+/* ---------- spots editor ---------- */
+function allClassNames() {
+  const names = [];
+  ORDER.forEach(d => cfg.schedule[d].forEach(c => { const n = String(c[0]).trim(); if (n && names.indexOf(n) < 0) names.push(n); }));
+  return names;
+}
+function renderSpots() {
+  const def = $("#spotDef"); def.value = cfg.spots.def;
+  def.oninput = () => { cfg.spots.def = parseInt(def.value, 10) || 0; };
+  cfg.spots.by = cfg.spots.by || {};
+  $("#spotRows").replaceChildren(...allClassNames().map(n => {
+    const row = el("div", null, "crow");
+    const i = inp(cfg.spots.by[n], "الافتراضي", 0, "number"); i.min = 1; i.max = 100;
+    i.oninput = () => { if (i.value) cfg.spots.by[n] = parseInt(i.value, 10); else delete cfg.spots.by[n]; };
+    const lab = el("b", n); lab.style.flex = "1";
+    row.append(lab, i); i.style.width = "110px";
+    return row;
+  }));
+}
+
+/* ---------- coaches editor ---------- */
+function usage(n) { let k = 0; ORDER.forEach(d => cfg.schedule[d].forEach(c => { if (c[3] === n) k++; })); return k; }
+function renderCoaches() {
+  const box = $("#coachRows");
+  box.replaceChildren(...cfg.coaches.map((n, i) => {
+    const row = el("div", null, "crow"), k = usage(n);
+    const i1 = inp(n, "", 30);
+    i1.onchange = () => {
+      const v = i1.value.trim();
+      if (!v || (cfg.coaches.indexOf(v) >= 0 && v !== n)) { i1.value = n; return; }
+      ORDER.forEach(d => cfg.schedule[d].forEach(c => { if (c[3] === n) c[3] = v; }));
+      cfg.coaches[i] = v; renderCoaches(); renderClassRows();
+    };
+    const d = el("button", "حذف", "danger sm"); d.type = "button";
+    d.onclick = () => {
+      const q = k ? "الكوتش " + n + " عندها " + k + " حصة. إذا حذفتيها بتصير حصصها بدون كوتش، ولازم تختاري كوتش بديل بتبويب الجدول قبل الحفظ. متأكدة؟" : "حذف الكوتش " + n + "؟";
+      if (!confirm(q)) return;
+      ORDER.forEach(dd => cfg.schedule[dd].forEach(c => { if (c[3] === n) c[3] = ""; }));
+      cfg.coaches.splice(i, 1); renderCoaches(); renderClassRows();
+      if (k) setMsg(document.querySelector("#pCoach .saveMsg"), "تنبيه: " + k + " حصة بدون كوتش. روحي لتبويب الجدول واختار كوتش بديل ثم احفظي.", "err");
+    };
+    row.append(i1, el("span", k + " حصة"), d);
+    return row;
+  }));
+}
+$("#addCoach").onclick = () => {
+  const v = $("#newCoach").value.trim();
+  if (!v || cfg.coaches.indexOf(v) >= 0) return;
+  cfg.coaches.push(v); $("#newCoach").value = ""; renderCoaches(); renderClassRows();
+};
+
+/* ---------- daily challenge ---------- */
+function renderCh() {
+  $("#chRows").replaceChildren(...DAYS.map((d, i) => {
+    const w = el("div", null, "chrow");
+    const a = inp(cfg.ch.ar[i], "بالعربي", 80), e = inp(cfg.ch.en[i], "English", 80);
+    e.dir = "ltr";
+    a.oninput = () => { cfg.ch.ar[i] = a.value; }; e.oninput = () => { cfg.ch.en[i] = e.value; };
+    w.append(el("b", d), a, e);
+    return w;
+  }));
+}
+
+/* ---------- workout plan ---------- */
+function renderPlan() {
+  const box = $("#planRows");
+  if (!cfg.plan.length) { box.replaceChildren(el("div", "ما في أيام تمارين", "empty")); return; }
+  box.replaceChildren(...cfg.plan.map((p, pi) => {
+    const w = el("div", null, "plan");
+    const ar = inp(p.ar, "اسم اليوم بالعربي", 50), en = inp(p.en, "Day name (English)", 50);
+    en.dir = "ltr"; en.style.marginTop = "6px";
+    ar.oninput = () => { p.ar = ar.value; }; en.oninput = () => { p.en = en.value; };
+    w.append(ar, en, el("h3", "التمارين"));
+    p.items.forEach((it, ii) => {
+      const r = el("div", null, "xrow");
+      const n = inp(it[0], "اسم التمرين", 50); n.dir = "ltr";
+      const m = inp(it[1], "جهاز #", 0, "number"); m.min = 1; m.max = 99;
+      n.oninput = () => { it[0] = n.value; };
+      m.oninput = () => { it[1] = m.value ? parseInt(m.value, 10) : null; };
+      const d = el("button", "✕", "danger sm"); d.type = "button";
+      d.onclick = () => { p.items.splice(ii, 1); renderPlan(); };
+      r.append(n, m, d); w.appendChild(r);
+    });
+    const hint = el("p", "رقم الجهاز فاضي = أوزان حرة", "hint");
+    const add = el("button", "+ تمرين", "ghost sm"); add.type = "button";
+    add.onclick = () => { p.items.push(["", null]); renderPlan(); };
+    const del = el("button", "حذف هاليوم", "danger sm"); del.type = "button"; del.style.marginInlineStart = "8px";
+    del.onclick = () => { if (confirm("حذف " + (p.ar || "هاليوم") + "؟")) { cfg.plan.splice(pi, 1); renderPlan(); } };
+    w.append(hint, add, del);
+    return w;
+  }));
+}
+$("#addPlan").onclick = () => {
+  const n = cfg.plan.length + 1;
+  cfg.plan.push({ ar: "اليوم " + n, en: "Day " + n, items: [["", null]] });
+  renderPlan();
+};
+
+/* ---------- save ---------- */
+function buildPayload() {
+  const schedule = {};
+  for (const d of ORDER) {
+    const list = [];
+    for (const c of cfg.schedule[d]) {
+      const name = String(c[0]).trim(), time = String(c[1]).trim(), coach = String(c[3]).trim();
+      if (!name || !/^\d{2}:\d{2}$/.test(time) || !coach) throw new Error("كملي اسم الحصة والوقت والكوتش (" + d + ")");
+      list.push([name, time, Math.min(240, Math.max(15, parseInt(c[2], 10) || 60)), coach]);
+    }
+    list.sort((a, b) => a[1].localeCompare(b[1]));
+    schedule[d] = list;
+  }
+  const plan = cfg.plan.map(p => ({
+    ar: String(p.ar).trim(), en: String(p.en).trim() || String(p.ar).trim(),
+    items: p.items.filter(it => String(it[0]).trim()).map(it => [String(it[0]).trim(), it[1] ? Number(it[1]) : null])
+  })).filter(p => p.ar);
+  const ch = { ar: cfg.ch.ar.map(s => String(s).trim()), en: cfg.ch.en.map(s => String(s).trim()) };
+  if (ch.ar.concat(ch.en).some(s => !s)) throw new Error("كملي كل تحديات الأسبوع (عربي وإنجليزي)");
+  const coaches = cfg.coaches.slice();
+  const def = parseInt(cfg.spots.def, 10);
+  if (!(def >= 1 && def <= 100)) throw new Error("العدد الافتراضي للأماكن لازم يكون بين 1 و100");
+  const by = {};
+  allClassNames().forEach(n => {
+    const v = cfg.spots.by[n];
+    if (v == null || v === "") return;
+    if (!(v >= 1 && v <= 100)) throw new Error("عدد أماكن " + n + " لازم يكون بين 1 و100");
+    by[n] = v;
+  });
+  return { schedule, plan, ch, coaches, spots: { def, by } };
+}
+async function save() {
+  const msgs = document.querySelectorAll(".saveMsg"), btns = document.querySelectorAll(".saveBtn");
+  msgs.forEach(m => setMsg(m, "...", ""));
+  let payload;
+  try { payload = buildPayload(); }
+  catch (e) { msgs.forEach(m => setMsg(m, e.message, "err")); return; }
+  btns.forEach(b => b.disabled = true);
+  try {
+    const r = await api({ action: "adminSetConfig", config: JSON.stringify(payload) });
+    if (!r.ok) { msgs.forEach(m => setMsg(m, errText(r.error), "err")); return; }
+    info.config = payload; info.schedule = payload.schedule; info.coaches = payload.coaches;
+    loadCfg(); renderAll(); fillForm();
+    msgs.forEach(m => setMsg(m, "✅ انحفظ. بيظهر للمشتركات خلال دقيقة", "ok"));
+  } catch (e) {
+    msgs.forEach(m => setMsg(m, "ما في اتصال، جرّب مرة ثانية", "err"));
+  } finally { btns.forEach(b => b.disabled = false); }
+}
+document.querySelectorAll(".saveBtn").forEach(b => b.onclick = save);
+
+/* ---------- cancel form ---------- */
+function fillForm() {
+  const classes = [];
+  Object.keys(info.schedule).forEach(d => info.schedule[d].forEach(c => { if (classes.indexOf(c[0]) < 0) classes.push(c[0]); }));
+  $("#coachSel").replaceChildren(...info.coaches.map(c => { const o = el("option", c); o.value = c; return o; }));
+  $("#classSel").replaceChildren(...classes.map(c => { const o = el("option", c); o.value = c; return o; }));
+  const d = $("#date"); d.min = info.today; if (!d.value) d.value = info.today;
+  renderPreview();
+}
+function targets() {
+  const day = dayOf($("#date").value);
+  const list = (day && info.schedule[day]) || [];
+  const v = mode === "coach" ? $("#coachSel").value : $("#classSel").value;
+  return { day, list: list.filter(c => mode === "coach" ? c[3] === v : c[0] === v) };
+}
+function renderPreview() {
+  const { day, list } = targets(), p = $("#preview");
+  if (!day) { p.textContent = "اختار تاريخ"; return; }
+  p.replaceChildren();
+  p.appendChild(el("b", day + ":"));
+  if (!list.length) { p.appendChild(el("div", "ما في حصص مطابقة بهذا اليوم")); $("#cancelBtn").disabled = true; return; }
+  $("#cancelBtn").disabled = false;
+  list.forEach(c => p.appendChild(el("div", "• " + c[0] + " — " + c[1] + " (" + c[3] + ")")));
+}
+function setMode(m) {
+  mode = m;
+  $("#mCoach").classList.toggle("on", m === "coach");
+  $("#mClass").classList.toggle("on", m === "class");
+  $("#coachSel").hidden = m !== "coach";
+  $("#classSel").hidden = m !== "class";
+  renderPreview();
+}
+$("#mCoach").onclick = () => setMode("coach");
+$("#mClass").onclick = () => setMode("class");
+["#date", "#coachSel", "#classSel"].forEach(s => $(s).addEventListener("change", renderPreview));
+
+$("#cancelBtn").onclick = async () => {
+  const { day, list } = targets();
+  if (!day || !list.length) return;
+  const names = list.map(c => c[0] + " " + c[1]).join("، ");
+  if (!confirm("متأكدة بدك تلغي (" + day + " " + $("#date").value + "): " + names + "؟")) return;
+
+  const msg = $("#msg"), res = $("#result");
+  setMsg(msg, "...", ""); res.replaceChildren(); $("#cancelBtn").disabled = true;
+  try {
+    const params = { action: "adminCancel", date: $("#date").value, note: $("#note").value.trim() };
+    if (mode === "coach") params.coach = $("#coachSel").value; else params.cls = $("#classSel").value;
+    const r = await api(params);
+    if (!r.ok) { setMsg(msg, errText(r.error), "err"); return; }
+    setMsg(msg, "✅ تم إلغاء الحصص", "ok");
+    r.cancelled.forEach(c => {
+      const box = el("div", null, "c");
+      box.appendChild(el("b", c.cls + " — " + c.time));
+      if (!c.bookings.length) box.appendChild(el("div", "ما كان في حجوزات"));
+      else {
+        box.appendChild(el("div", "فيها " + c.bookings.length + " حجز، تواصل معهم:"));
+        c.bookings.forEach(b => {
+          const row = el("div", b.name + " — ");
+          const a = el("a", b.phone); a.href = "tel:" + b.phone;
+          row.appendChild(a); box.appendChild(row);
+        });
+      }
+      res.appendChild(box);
+    });
+    $("#note").value = "";
+    refreshList();
+  } catch (e) {
+    setMsg(msg, "ما في اتصال، جرّب مرة ثانية", "err");
+  } finally { renderPreview(); }
+};
+async function refreshList() {
+  try { const i = await api({ action: "adminInfo" }); if (i.ok) { info.cancellations = i.cancellations; renderList(); } } catch (e) {}
+}
+
+/* ---------- upcoming cancellations ---------- */
+function renderList() {
+  const box = $("#list");
+  if (!info.cancellations.length) { box.replaceChildren(el("div", "ما في إلغاءات قادمة", "empty")); return; }
+  box.replaceChildren(...info.cancellations.map(x => {
+    const row = el("div", null, "item"), left = el("div");
+    left.appendChild(el("div", x.cls, "t"));
+    left.appendChild(el("div", (x.day || "") + " " + x.date + (x.note ? " — " + x.note : ""), "s"));
+    const b = el("button", "إرجاع", "ghost");
+    b.onclick = async () => {
+      if (!confirm("إرجاع حصة " + x.cls + " بتاريخ " + x.date + "؟")) return;
+      b.disabled = true;
+      try {
+        const r = await api({ action: "adminRestore", date: x.date, cls: x.cls });
+        if (!r.ok) { alert(errText(r.error)); b.disabled = false; return; }
+        refreshList();
+      } catch (e) { alert("ما في اتصال، جرّب مرة ثانية"); b.disabled = false; }
+    };
+    row.append(left, b);
+    return row;
+  }));
+}
+
+</script>
+<script type="module">
+import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, signOut,
+  doc, getDoc, setDoc, collection, getDocs, serverTimestamp } from "./xfit-firebase.js";
+import { deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const $ = s => document.querySelector(s);
+const say = (n, t, k) => { n.textContent = t || ""; n.className = "msg " + (k || ""); };
+window.xfitSignIn = async (email, pass) => {
+  try { await signInWithEmailAndPassword(auth, email, pass); return null; }
+  catch (e) { return e.code || "error"; }
+};
+window.xfitSignOut = () => signOut(auth);
+window.xfitToken = async () => auth.currentUser ? auth.currentUser.getIdToken() : "";
+onAuthStateChanged(auth, u => { if (u && window.xfitResume) window.xfitResume(); });
+
+/* ---------- المشتركات ---------- */
+const today = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+
+let members = [], filter = "all", current = null;
+
+
+async function load() {
+  const list = $("#mlist");
+  list.replaceChildren(); $("#mcount").textContent = "جاري التحميل...";
+  try {
+    const [us, ms] = await Promise.all([getDocs(collection(db, "users")), getDocs(collection(db, "memberships"))]);
+    const mm = {}; ms.forEach(d => mm[d.id] = d.data());
+    members = us.docs.map(d => ({ uid: d.id, u: d.data(), m: mm[d.id] || null }))
+      .sort((a, b) => String(a.u.name || "").localeCompare(String(b.u.name || ""), "ar"));
+    render();
+    $("#mcount").textContent += " | " + (auth.currentUser && auth.currentUser.email) + " | users:" + us.size + " memberships:" + ms.size;
+  } catch (e) {
+    $("#mcount").textContent = (auth.currentUser && auth.currentUser.email) + " | " + (e.code || e.message);
+    const p = document.createElement("p"); p.className = "msg err";
+    p.textContent = "ما قدرت أحمّل البيانات. تأكدي إنك داخلة بإيميل الأدمن وإنه قواعد Firestore منشورة.";
+    list.appendChild(p);
+  }
+}
+
+function tag(text, cls) { const s = document.createElement("span"); s.className = "tag " + (cls || ""); s.textContent = text; return s; }
+
+function render() {
+  const q = $("#mq").value.trim().toLowerCase(), t = today();
+  const rows = members.filter(x => {
+    const m = x.m, expired = m && m.end && m.end < t;
+    if (filter === "private" && !(m && m.type === "private")) return false;
+    if (filter === "sched" && !(m && m.schedule)) return false;
+    if (filter === "nut" && !(m && m.nutrition)) return false;
+    if (filter === "expired" && !expired) return false;
+    if (filter === "none" && m) return false;
+    if (!q) return true;
+    return [x.u.name, x.u.phone, x.u.email].some(v => String(v || "").toLowerCase().includes(q));
+  });
+  $("#mcount").textContent = rows.length + " من " + members.length + " مشترك";
+  const list = $("#mlist"); list.replaceChildren();
+  if (!rows.length) { const p = document.createElement("p"); p.className = "mute"; p.textContent = "ما في نتائج. جرّب بحث أو فلتر ثاني."; list.appendChild(p); return; }
+  rows.forEach(x => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "mrow";
+    const n = document.createElement("b"); n.textContent = x.u.name || "(بدون اسم)";
+    const meta = document.createElement("div"); meta.className = "meta";
+    const ph = document.createElement("span"); ph.dir = "ltr"; ph.textContent = x.u.phone || "";
+    meta.appendChild(ph);
+    const m = x.m;
+    if (!m) meta.appendChild(tag("بدون اشتراك", "x"));
+    else {
+      meta.appendChild(tag(m.type === "private" ? "برايفت 💎" : "جروب"));
+      if (m.end) meta.appendChild(m.end < t ? tag("انتهى " + m.end, "bad") : tag("حتى " + m.end, "x"));
+      if (m.schedule) meta.appendChild(tag("جدول", "x"));
+      if (m.nutrition) meta.appendChild(tag("تغذية", "x"));
+    }
+    b.append(n, meta); b.onclick = () => openEditor(x); list.appendChild(b);
+  });
+}
+
+function openEditor(x) {
+  current = x; const m = x.m || {};
+  $("#dName").textContent = x.u.name || "(بدون اسم)";
+  $("#dInfo").textContent = [x.u.phone, x.u.email].filter(Boolean).join(" · ");
+  $("#fType").value = m.type === "private" ? "private" : "group";
+  $("#fEnd").value = m.end || "";
+  $("#fSched").value = m.schedule || "";
+  $("#fNut").value = m.nutrition || "";
+  $("#fNote").value = m.note || "";
+  say($("#dmsg")); $("#dlg").showModal();
+}
+$("#dClose").onclick = () => $("#dlg").close();
+$("#dSave").onclick = async () => {
+  const m = $("#dmsg"); if (!current) return;
+  const data = {
+    type: $("#fType").value, end: $("#fEnd").value,
+    schedule: $("#fSched").value.trim(), nutrition: $("#fNut").value.trim(), note: $("#fNote").value.trim(),
+    updatedAt: serverTimestamp()
+  };
+  $("#dSave").disabled = true; say(m, "...");
+  try {
+    await setDoc(doc(db, "memberships", current.uid), data, { merge: true });
+    current.m = { ...(current.m || {}), ...data };
+    say(m, "✅ انحفظ", "ok"); render();
+    setTimeout(() => $("#dlg").close(), 600);
+  } catch (e) { say(m, "ما انحفظ. تأكدي من القواعد وجرّب مرة ثانية", "err"); }
+  finally { $("#dSave").disabled = false; }
+};
+
+$("#mq").oninput = render;
+$("#mchips").onclick = e => {
+  const b = e.target.closest("[data-f]"); if (!b) return;
+  filter = b.dataset.f;
+  document.querySelectorAll("#mchips .chip").forEach(c => c.setAttribute("aria-pressed", String(c === b)));
+  render();
+};
+document.querySelector('#nav [data-p="pMem"]').addEventListener("click", () => { if (auth.currentUser) load(); });
+
+/* ---------- الحجوزات (مين حاجز بكل حصة) ---------- */
+let bkData = null, phoneToUid = null;
+const last9 = s => String(s || "").replace(/\D/g, "").slice(-9);
+$("#bkDate").value = today();
+
+async function loadBk() {
+  const m = $("#bkMsg"); say(m, "...", "");
+  try {
+    const r = await api({ action: "adminBookings", date: $("#bkDate").value });
+    if (!r.ok) { say(m, "ما قدرت أحمّل الحجوزات، تأكدي من التاريخ", "err"); return; }
+    bkData = r; say(m, "");
+    const sel = $("#bkCoach"), keep = sel.value;
+    const coaches = [...new Set(r.classes.map(c => c.coach))];
+    sel.replaceChildren(...[["", "كل الكوتشات"]].concat(coaches.map(c => [c, c])).map(([v, t]) => { const o = document.createElement("option"); o.value = v; o.textContent = t; return o; }));
+    sel.value = coaches.indexOf(keep) >= 0 ? keep : "";
+    renderBk();
+  } catch (e) { say(m, "ما في اتصال، جرّب مرة ثانية", "err"); }
+}
+
+function bkText(cl, r) {
+  const lines = [cl.cls + " " + cl.time + " (" + r.day + " " + r.date + ") - " + cl.coach, "العدد: " + cl.bookings.length + "/" + cl.max];
+  cl.bookings.forEach((b, i) => lines.push((i + 1) + ". " + b.name + " - " + b.phone));
+  return lines.join("\n");
+}
+function copyText(t, btn) {
+  const done = () => { const o = btn.textContent; btn.textContent = "تم النسخ ✓"; setTimeout(() => btn.textContent = o, 1500); };
+  if (navigator.clipboard) navigator.clipboard.writeText(t).then(done, () => prompt("انسخي:", t)); else prompt("انسخي:", t);
+}
+const bkFiltered = () => bkData ? bkData.classes.filter(c => !$("#bkCoach").value || c.coach === $("#bkCoach").value) : [];
+
+function renderBk() {
+  const box = $("#bkList"); box.replaceChildren();
+  const list = bkFiltered(), r = bkData;
+  const total = list.reduce((n, c) => n + c.bookings.length, 0);
+  $("#bkSum").textContent = r ? (r.day + " · " + list.length + " حصة · " + total + " حجز") : "";
+  if (!list.length) { const p = document.createElement("p"); p.className = "mute"; p.textContent = "ما في حصص بهالتاريخ"; box.appendChild(p); return; }
+  list.forEach(cl => {
+    const card = document.createElement("div"); card.className = "card";
+    const h = document.createElement("h2"); h.textContent = cl.cls + " · " + cl.time; card.appendChild(h);
+    const meta = document.createElement("div"); meta.className = "meta";
+    meta.append(tag("🧑‍🏫 " + cl.coach), tag(cl.bookings.length + "/" + cl.max, cl.bookings.length >= cl.max ? "bad" : "x"));
+    if (cl.cancelled) meta.append(tag("ملغاة", "bad"));
+    card.appendChild(meta);
+    if (!cl.bookings.length) { const p = document.createElement("p"); p.className = "mute"; p.textContent = "ما في حجوزات"; card.appendChild(p); }
+    cl.bookings.forEach((b, i) => {
+      const row = document.createElement("div"); row.className = "crow";
+      const n = document.createElement("span"); n.textContent = (i + 1) + ". " + b.name; n.style.flex = "1"; n.style.fontSize = "15px"; n.style.color = "inherit"; n.style.whiteSpace = "normal";
+      const ph = document.createElement("span"); ph.dir = "ltr"; ph.className = "mute"; ph.textContent = b.phone;
+      const x = document.createElement("button"); x.type = "button"; x.className = "danger sm"; x.textContent = "إلغاء";
+      x.onclick = () => removeBk(cl, b, x);
+      row.append(n, ph, x); card.appendChild(row);
+    });
+    if (cl.bookings.length) {
+      const cp = document.createElement("button"); cp.type = "button"; cp.className = "ghost full"; cp.textContent = "نسخ قائمة هالحصة";
+      cp.onclick = () => copyText(bkText(cl, r), cp); card.appendChild(cp);
+    }
+    box.appendChild(card);
+  });
+}
+
+/* بيمسح نسخة الحجز من حساب المشترك بـ Firestore (بنلاقيها من رقم الموبايل) */
+async function dropMirror(key, phone) {
+  try {
+    if (!phoneToUid) {
+      const us = await getDocs(collection(db, "users")); phoneToUid = {};
+      us.forEach(d => { const p = last9(d.data().phone); if (p) phoneToUid[p] = d.id; });
+    }
+    const uid = phoneToUid[last9(phone)];
+    if (uid) {
+      await deleteDoc(doc(db, "users", uid, "bookings", key.replace(/[\/|]/g, "_")));
+      /* كمان بنشيله من قائمة التذكيرات عشان ما توصلها إشعار عن حصة انلغت */
+      try {
+        const ud = await getDoc(doc(db, "users", uid)), up = (ud.data() || {}).up;
+        if (Array.isArray(up)) await setDoc(doc(db, "users", uid), { up: up.filter(x => x && x.key !== key) }, { merge: true });
+      } catch (e) {}
+    }
+  } catch (e) {}
+}
+async function removeBk(cl, b, btn) {
+  if (!confirm("إلغاء حجز " + b.name + " من " + cl.cls + " " + cl.time + "؟")) return;
+  btn.disabled = true;
+  try {
+    const r = await api({ action: "adminRemoveBooking", key: cl.key, phone: b.phone });
+    if (!r.ok && r.error !== "notfound") { alert("ما انلغى الحجز، جرّب مرة ثانية"); btn.disabled = false; return; }
+    await dropMirror(cl.key, b.phone);
+  } catch (e) { alert("ما في اتصال، جرّب مرة ثانية"); btn.disabled = false; return; }
+  loadBk();
+}
+$("#bkDate").onchange = loadBk;
+$("#bkCoach").onchange = renderBk;
+$("#bkCopyAll").onclick = () => {
+  if (!bkData) return;
+  const t = bkFiltered().filter(c => c.bookings.length).map(c => bkText(c, bkData)).join("\n\n");
+  copyText(t || "ما في حجوزات", $("#bkCopyAll"));
+};
+document.querySelector('#nav [data-p="pBook"]').addEventListener("click", () => { if (auth.currentUser) loadBk(); });
+window.xfitLoadBk = loadBk;
+
+</script>
+</body>
+</html>

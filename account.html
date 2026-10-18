@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#e11d2e">
+<title>Xfit Gym · حسابي</title>
+<style>
+:root{--pink:#e11d2e;--pink-l:#fde8ea;--bg:#fff8f8;--card:#fff;--text:#2b2b33;--mute:#8b8b99;--line:#f1d9db}
+@media (prefers-color-scheme:dark){:root{--bg:#17131a;--card:#221b27;--text:#f4eef6;--mute:#a79fb0;--line:#3a2c42;--pink-l:#3a2030}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}
+.wrap{max-width:520px;margin:0 auto;padding:16px}
+h1{color:var(--pink);font-size:22px;margin:6px 0 14px;display:flex;justify-content:space-between;align-items:center}
+h1 a{font-size:14px;color:var(--pink);text-decoration:none}
+h2{font-size:16px;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
+label{display:block;font-weight:700;font-size:14px;margin:10px 0 5px}
+input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--text)}
+button{font:inherit;font-weight:700;border:none;border-radius:12px;padding:11px 14px;cursor:pointer;background:var(--pink);color:#fff}
+button:disabled{opacity:.5}
+button.ghost{background:transparent;color:var(--pink);border:1px solid var(--pink)}
+.full{width:100%;margin-top:12px}
+.tabs{display:flex;gap:6px;margin-bottom:6px}.tabs button{flex:1}
+.msg{font-size:14px;margin:8px 0 0}.err{color:#d33}.ok{color:#1a9d4a}
+.mute{color:var(--mute);font-size:13px}
+.pill{display:inline-block;background:var(--pink-l);color:var(--pink);border-radius:20px;padding:3px 12px;font-weight:700;font-size:13px}
+.pre{white-space:pre-wrap;line-height:1.9;font-size:15px}
+.bk{padding:9px 0;border-top:1px solid var(--line);font-size:14px}.bk:first-child{border-top:none}
+.link{background:none;color:var(--pink);padding:6px 0;font-size:13px;text-decoration:underline}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1><span>حسابي</span><a id="homeLink" href="./" hidden>← الرئيسية</a></h1>
+
+  <section id="auth" class="card" hidden>
+    <div class="tabs"><button id="tLogin" type="button">دخول</button><button id="tReg" type="button" class="ghost">حساب جديد</button></div>
+    <div id="regOnly" hidden>
+      <label for="nm">الاسم</label><input id="nm" maxlength="60" autocomplete="name">
+      <label for="ph">رقم الموبايل</label><input id="ph" type="tel" inputmode="tel" placeholder="07xxxxxxxx" autocomplete="tel">
+    </div>
+    <label for="em">الإيميل</label><input id="em" type="email" dir="ltr" autocomplete="email">
+    <label for="pw">كلمة السر</label><input id="pw" type="password" dir="ltr" autocomplete="current-password">
+    <p id="amsg" class="msg"></p>
+    <button id="go" class="full" type="button">دخول</button>
+    <button id="forgot" class="link" type="button">نسيت كلمة السر؟</button>
+  </section>
+
+  <section id="me" hidden>
+    <div class="card"><h2 id="hi"></h2><span id="plan" class="pill"></span><p id="subInfo" class="mute"></p></div>
+    <div class="card" id="cSched" hidden><h2>جدولي الخاص</h2><div id="sched" class="pre"></div></div>
+    <div class="card" id="cNut" hidden><h2>خطة التغذية</h2><div id="nut" class="pre"></div></div>
+    <div class="card" id="cNote" hidden><h2>ملاحظات من الكوتش</h2><div id="note" class="pre"></div></div>
+    <div class="card"><h2>حجوزاتي</h2><div id="bks" class="mute">...</div>
+      <p class="mute">لإلغاء حجز تواصل معنا على <a href="https://wa.me/962793750075" style="color:var(--pink)">واتساب</a>.</p></div>
+    <div class="card"><h2>بياناتي</h2>
+      <label for="en">الاسم</label><input id="en" maxlength="60">
+      <label for="ep">رقم الموبايل</label><input id="ep" type="tel" inputmode="tel">
+      <p id="pmsg" class="msg"></p>
+      <button id="save" class="full" type="button">حفظ</button></div>
+    <button id="out" class="ghost full" type="button">تسجيل خروج</button>
+  </section>
+</div>
+
+<script type="module">
+import { auth, db, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
+  sendPasswordResetEmail, doc, getDoc, setDoc, updateDoc, collection, getDocs, serverTimestamp, liveBookings } from "./xfit-firebase.js";
+const $ = s => document.querySelector(s);
+const ERR = {
+  "auth/email-already-in-use": "هالإيميل مسجل من قبل، جرّب تسجلي دخول",
+  "auth/invalid-credential": "الإيميل أو كلمة السر غلط",
+  "auth/wrong-password": "الإيميل أو كلمة السر غلط",
+  "auth/user-not-found": "الإيميل أو كلمة السر غلط",
+  "auth/weak-password": "كلمة السر ضعيفة (6 أحرف على الأقل)",
+  "auth/invalid-email": "الإيميل غير صحيح",
+  "auth/too-many-requests": "محاولات كثيرة، جرّب بعد شوي",
+  "auth/network-request-failed": "ما في اتصال، جرّب مرة ثانية"
+};
+const say = (n, t, k) => { n.textContent = t || ""; n.className = "msg " + (k || ""); };
+function normPhone(p) {
+  let d = String(p).replace(/[٠-٩]/g, c => "٠١٢٣٤٥٦٧٨٩".indexOf(c)).replace(/\D/g, "");
+  if (d.startsWith("00962")) d = d.slice(5); else if (d.startsWith("962")) d = d.slice(3);
+  if (d.startsWith("7")) d = "0" + d;
+  return /^07[789]\d{7}$/.test(d) ? d : null;
+}
+let reg = false;
+function mode(r) { reg = r; $("#regOnly").hidden = !r; $("#go").textContent = r ? "إنشاء حساب" : "دخول";
+  $("#tLogin").className = r ? "ghost" : ""; $("#tReg").className = r ? "" : "ghost"; $("#forgot").hidden = r; say($("#amsg")); }
+$("#tLogin").onclick = () => mode(false); $("#tReg").onclick = () => mode(true);
+
+$("#go").onclick = async () => {
+  const m = $("#amsg"), email = $("#em").value.trim(), pw = $("#pw").value;
+  if (!email || !pw) return say(m, "اكتب الإيميل وكلمة السر", "err");
+  let name, phone;
+  if (reg) {
+    name = $("#nm").value.trim(); phone = normPhone($("#ph").value);
+    if (name.length < 2) return say(m, "اكتب اسمك", "err");
+    if (!phone) return say(m, "رقم الموبايل غير صحيح", "err");
+  }
+  $("#go").disabled = true; say(m, "...");
+  try {
+    if (reg) {
+      const c = await createUserWithEmailAndPassword(auth, email, pw);
+      await setDoc(doc(db, "users", c.user.uid), { name, phone, email: c.user.email, createdAt: serverTimestamp() });
+    } else await signInWithEmailAndPassword(auth, email, pw);
+    location.replace("./"); return;
+  } catch (e) { say(m, ERR[e.code] || "صار خطأ، جرّب مرة ثانية", "err"); }
+  finally { $("#go").disabled = false; }
+};
+$("#forgot").onclick = async () => {
+  const email = $("#em").value.trim(), m = $("#amsg");
+  if (!email) return say(m, "اكتب إيميلك أول", "err");
+  try { await sendPasswordResetEmail(auth, email); say(m, "بعتنالك رابط لتغيير كلمة السر على الإيميل", "ok"); }
+  catch (e) { say(m, ERR[e.code] || "صار خطأ", "err"); }
+};
+$("#out").onclick = () => signOut(auth);
+
+const today = () => { const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+function show(card, box, text) { $(card).hidden = !text; if (text) $(box).textContent = text; }
+
+async function load(u) {
+  const [p, ms, bk] = await Promise.all([
+    getDoc(doc(db, "users", u.uid)), getDoc(doc(db, "memberships", u.uid)),
+    getDocs(collection(db, "users", u.uid, "bookings"))
+  ]);
+  const prof = p.exists() ? p.data() : { name: "", phone: "" }, m = ms.exists() ? ms.data() : {};
+  $("#hi").textContent = "أهلاً " + (prof.name || "");
+  $("#en").value = prof.name || ""; $("#ep").value = prof.phone || "";
+  $("#plan").textContent = m.type === "private" ? "برايفت 💎" : "جروب";
+  let s = "";
+  if (m.end) { const left = Math.ceil((new Date(m.end + "T23:59:59") - new Date()) / 864e5);
+    s = left < 0 ? "انتهى اشتراكك بتاريخ " + m.end : "ينتهي اشتراكك بتاريخ " + m.end + " (باقي " + left + " يوم)"; }
+  $("#subInfo").textContent = s || "ما في اشتراك مسجل بعد، تواصل معنا لتفعيله.";
+  show("#cSched", "#sched", m.type === "private" && m.schedule);
+  show("#cNut", "#nut", m.type === "private" && m.nutrition);
+  show("#cNote", "#note", m.note);
+  const t = today(), live = await liveBookings(u, bk.docs), list = live.map(d => d.data()).filter(x => !x.cancelled).sort((a, b) => a.date < b.date ? 1 : -1);
+  const box = $("#bks"); box.replaceChildren();
+  if (!list.length) { box.textContent = "ما في حجوزات بعد"; return; }
+  list.forEach(b => { const r = document.createElement("div"); r.className = "bk";
+    r.textContent = (b.date >= t ? "🟢 " : "⚪ ") + b.cls + " — " + b.day + " " + b.date + " " + b.time; box.appendChild(r); });
+}
+$("#save").onclick = async () => {
+  const m = $("#pmsg"), name = $("#en").value.trim(), phone = normPhone($("#ep").value);
+  if (name.length < 2 || !phone) return say(m, "تأكدي من الاسم والرقم", "err");
+  try { await updateDoc(doc(db, "users", auth.currentUser.uid), { name, phone }); say(m, "✅ انحفظ", "ok"); $("#hi").textContent = "أهلاً " + name; }
+  catch (e) { say(m, "ما انحفظ، جرّب مرة ثانية", "err"); }
+};
+onAuthStateChanged(auth, u => {
+  $("#auth").hidden = !!u; $("#me").hidden = !u; $("#homeLink").hidden = !u;
+  if (u) load(u).catch(() => { $("#subInfo").textContent = "تعذّر تحميل البيانات، جرّب مرة ثانية"; });
+});
+mode(false);
+</script>
+</body>
+</html>
