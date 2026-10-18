@@ -1,0 +1,30 @@
+name: Class reminders
+
+on:
+  schedule:
+    - cron: "*/5 3-20 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reminders
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install
+        run: npm install --no-audit --no-fund
+      - name: Send reminders
+        run: node send-reminders.js
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          VAPID_PUBLIC_KEY: BEzY1cgRGxtpFcishvpIP_BPpDOmCe3E1_6bC-RwmA5qLpZ6js6QX0mtn2gNialh09hUNN7VYgA7kR-45NaiVBk
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}

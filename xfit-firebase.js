@@ -3,12 +3,12 @@ import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWith
 import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app = initializeApp({
-  apiKey: "AIzaSyCSuQcor7jlagynFz9Yu6lf6A6YH4T7j94",
-  authDomain: "x-fit-gym.firebaseapp.com",
-  projectId: "x-fit-gym",
-  storageBucket: "x-fit-gym.firebasestorage.app",
-  messagingSenderId: "181984480415",
-  appId: "1:181984480415:web:545afe5b97e1f95082a6aa"
+  apiKey: "AIzaSyCvqUn--SXm09R6P79tumJP1joK9IfWJnE",
+  authDomain: "xfit-gym-men.firebaseapp.com",
+  projectId: "xfit-gym-men",
+  storageBucket: "xfit-gym-men.firebasestorage.app",
+  messagingSenderId: "154569247723",
+  appId: "1:154569247723:web:ff383020663b4d0e9567ae"
 });
 export const auth = getAuth(app);
 export const db = getFirestore(app);
