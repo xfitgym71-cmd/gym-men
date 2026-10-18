@@ -810,6 +810,9 @@ async function checkCoach(u) {
 }
 
 /* ----- تبويب الأدمن: بيظهر بس لإيميل الأدمن (السيرفر بيتأكد من التوكن) ----- */
+/* لوحة الأدمن بتتحمّل بس لما تفتحي التبويب (عشان ما تبطّئ باقي الموقع) */
+function loadAdm() { const f = document.querySelector("#admFrame"); if (f && !f.getAttribute("src")) f.src = f.dataset.src; }
+document.addEventListener("click", e => { if (e.target.closest("#navAdmin")) loadAdm(); });
 async function checkOwner(u) {
   document.querySelector("#navAdmin").style.display = "none";
   try {
@@ -823,8 +826,7 @@ async function checkOwner(u) {
     }
     if (!o) return;
     document.querySelector("#navAdmin").style.display = "";
-    const f = document.querySelector("#admFrame"); if (f && !f.getAttribute("src")) f.src = f.dataset.src;   /* لوحة الإدارة الكاملة جوّا التبويب */
-    if (!sessionStorage.getItem("xfitm_ad_open")) { sessionStorage.setItem("xfitm_ad_open", "1"); go("adm"); }
+    if (!sessionStorage.getItem("xfitm_ad_open")) { sessionStorage.setItem("xfitm_ad_open", "1"); loadAdm(); go("adm"); }
   } catch (e) {}
 }
 let lastMine = 0;

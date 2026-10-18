@@ -259,12 +259,19 @@ const errText = e => ERR[e] || "صار خطأ، جرّب مرة ثانية";
 
 async function api(params) {
   const idToken = window.xfitToken ? await window.xfitToken() : "";
-  const r = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(Object.assign({ idToken }, params))
-  });
-  return r.json();
+  const body = JSON.stringify(Object.assign({ idToken }, params));
+  let lastErr = null;
+  for (let i = 0; i < 2; i++) {
+    const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 25000);
+    try {
+      const r = await fetch(API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body, signal: ctl.signal });
+      clearTimeout(t);
+      const j = await r.json();
+      if (j && j.error === "busy" && i === 0) { await new Promise(f => setTimeout(f, 1500)); continue; }
+      return j;
+    } catch (e) { clearTimeout(t); lastErr = e; }
+  }
+  throw lastErr || new Error("net");
 }
 function el(tag, text, cls) {
   const e = document.createElement(tag);
@@ -286,16 +293,16 @@ function setMsg(node, text, kind) { node.textContent = text || ""; node.classNam
 /* ---------- login ---------- */
 async function login(silent) {
   const m = $("#loginMsg");
-  if (!silent) setMsg(m, "...");
+  setMsg(m, silent ? "جاري التحميل..." : "...");
   $("#loginBtn").disabled = true;
   try {
     const r = await api({ action: "adminInfo" });
-    if (!r.ok) { if (!silent) setMsg(m, errText(r.error), "err"); return; }
+    if (!r.ok) { setMsg(m, errText(r.error), "err"); return; }
     info = r;
     $("#login").hidden = true; $("#panel").hidden = false;
     loadCfg(); fillForm(); renderList(); renderAll(); if (window.xfitLoadBk) window.xfitLoadBk();
   } catch (e) {
-    if (!silent) setMsg(m, "ما في اتصال، جرّب مرة ثانية", "err");
+    setMsg(m, "ما في اتصال، جرّب مرة ثانية", "err");
   } finally { $("#loginBtn").disabled = false; }
 }
 /* One login for everything: Firebase (email + password) opens the members page,

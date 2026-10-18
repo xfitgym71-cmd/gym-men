@@ -2,7 +2,7 @@
    - App files: cache-first with background refresh (opens instantly, even offline)
    - Google Apps Script API (bookings, counts, ratings): always network, never cached
    Bump CACHE_VERSION whenever you change index.html so users get the update. */
-const CACHE_VERSION = "xfitm-v2";
+const CACHE_VERSION = "xfitm-v3";
 const APP_FILES = [
   "./",
   "./index.html",
